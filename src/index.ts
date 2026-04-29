@@ -6,7 +6,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import { Environment } from "@common/enums/environment.enum";
 import uploadRouter from "@routes/uploadImage.route";
-import { apiPerformanceLogger } from "@common/class/checkAPIPerformance.class";
+import { apiPerformanceLogger } from "@common/functions/checkAPIPerformance.function";
 
 const app = express();
 // Create HTTP server using Express

@@ -1,11 +1,13 @@
 import { devLogger } from "@utils/logger.util";
-import { Response } from "express";
+import { Request, Response } from "express";
 
 // Function to run before running API logic, to check for API key or other preconditions
 export default function runApiPrechecks({
+  request,
   response,
   APIKeyCheck: APIKeyCheck,
 }: {
+  request: Request;
   response: Response;
   APIKeyCheck: boolean;
 }) {
