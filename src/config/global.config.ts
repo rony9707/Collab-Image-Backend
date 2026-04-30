@@ -1,4 +1,4 @@
-import { GlobalConfig } from "@common/interface/globalConfig.interface";
+import { GlobalConfig } from "../common/interface/globalConfig.interface";
 
 export const globalConfig:GlobalConfig = {
   debugMode: true,
