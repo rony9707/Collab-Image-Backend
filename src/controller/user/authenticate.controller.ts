@@ -1,4 +1,4 @@
-import { User } from "@models/user.model";
+import { User } from "../../models/user.model";
 import { Request, Response } from "express";
 
 export const authenticate = async (req: Request, res: Response) => {
