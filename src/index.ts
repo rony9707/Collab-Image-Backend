@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import { Environment } from "@common/enums/environment.enum";
 import uploadRouter from "@routes/uploadImage.route";
 import { apiPerformanceLogger } from "@common/functions/checkAPIPerformance.function";
+import { clerkMiddleware, getAuth } from "@clerk/express";
 
 const app = express();
 // Create HTTP server using Express
@@ -14,6 +15,7 @@ const server = http.createServer(app);
 
 // Enable CORS with specific settings
 app.use(
+  clerkMiddleware(),
   cors({
     origin: process.env.frontEndConnectionString,
     credentials: true,
@@ -31,6 +33,16 @@ app.use(apiPerformanceLogger);
 
 // Register upload routes
 app.use("/upload", uploadRouter);
+
+//demo route for auth
+app.get("/protected", (req, res) => {
+  const { userId } = getAuth(req);
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  res.json({ message: "You are authenticated!", userId });
+});
+
 
 // Connect to MongoDB and start the server
 mongoose
