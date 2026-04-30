@@ -1,4 +1,4 @@
-import { devLogger } from "@utils/logger.util";
+import { devLogger } from "../../utils/logger.util";
 import { Request, Response } from "express";
 
 // Function to run before running API logic, to check for API key or other preconditions
