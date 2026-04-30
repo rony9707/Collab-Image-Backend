@@ -1,4 +1,4 @@
-import { devLogger } from "@utils/logger.util";
+import { devLogger } from "../../utils/logger.util";
 import { Request, Response, NextFunction } from "express";
 
 /**

@@ -1,6 +1,6 @@
 // src/utils/logger.ts
 
-import { globalConfig } from "@config/global.config";
+import { globalConfig } from "../config/global.config";
 
 
 export const devLogger = (...args: unknown[]) => {
