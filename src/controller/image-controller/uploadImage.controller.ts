@@ -4,7 +4,6 @@ import { imagekit } from "../../config/imagekit.config";
 import { devLogger } from "../../utils/logger.util";
 import { Request, Response } from "express";
 import multer from "multer";
-import { v4 as uuidv4 } from "uuid";
 
 
 const storage = multer.memoryStorage();
@@ -88,7 +87,7 @@ async function uploadImageToImageKit(
   usergroup: string,
 ) {
   const folderPath = `CameraCollab/${username}/${usergroup}`;
-  const fileName = `${uuidv4()}`;
+  const fileName = `${Date.now()}_${username}.jpg`;
   const response = await imagekit.upload({
     file: fileBuffer,
     fileName: `${username}_${usergroup}_${fileName}`,
