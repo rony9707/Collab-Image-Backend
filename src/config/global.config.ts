@@ -6,4 +6,5 @@ export const globalConfig:GlobalConfig = {
   enableCreateGroupAPI: true,  //POST /createGroup
   enableGetGroupsAPI: true,    //GET /getGroups
   enableDeleteGroupAPI: true,  //DELETE /deleteGroup  
+  enableModifyGroupAPI: true,  //PUT /modifyGroup
 };

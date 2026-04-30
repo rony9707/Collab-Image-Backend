@@ -4,4 +4,5 @@ export interface GlobalConfig {
   enableCreateGroupAPI: boolean;
   enableGetGroupsAPI: boolean;
   enableDeleteGroupAPI: boolean;
+  enableModifyGroupAPI: boolean;
 }
