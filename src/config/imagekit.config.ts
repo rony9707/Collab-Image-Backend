@@ -1,5 +1,5 @@
 import ImageKit from "imagekit";
-import "@config/env.config";
+import "../config/env.config";
 
 export const imagekit = new ImageKit({
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY!,

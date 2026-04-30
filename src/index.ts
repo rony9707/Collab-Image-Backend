@@ -1,18 +1,15 @@
-import "@config/env.config";
+import "./config/env.config";
 
-import express from "express";
-import http from "http";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import { Environment } from "@common/enums/environment.enum";
-import uploadRouter from "@routes/uploadImage.route";
-import { apiPerformanceLogger } from "@common/functions/checkAPIPerformance.function";
+
+import uploadRouter from "./routes/uploadImage.route";
+import { apiPerformanceLogger } from "./common/functions/checkAPIPerformance.function";
 
 const app = express();
-// Create HTTP server using Express
-const server = http.createServer(app);
 
-// Enable CORS with specific settings
+/* -------------------- Middleware -------------------- */
 app.use(
   cors({
     origin: process.env.frontEndConnectionString,
@@ -24,31 +21,38 @@ app.use(
   }),
 );
 
-// Parse incoming JSON requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(apiPerformanceLogger);
 
-// Register upload routes
+/* -------------------- Routes -------------------- */
 app.use("/upload", uploadRouter);
 
-// Connect to MongoDB and start the server
-mongoose
-  .connect(process.env.DBConnectionString as string)
-  .then(() => {
-    console.log("Connected to MongoDB");
+/* -------------------- DB Connection -------------------- */
+let isConnected = false;
 
-    // Start server on specified port
-    server.listen(process.env.PORT, () => {
-      if (process.env.ENV == Environment.Production) {
-        console.log(`Server running on ${process.env.ENV} environment`);
-      } else {
-        console.log(
-          `Server running on port ${process.env.PORT} in ${process.env.ENV} mode`,
-        );
-      }
+const connectDB = async () => {
+  if (isConnected) return;
+
+  await mongoose.connect(process.env.DBConnectionString as string);
+  isConnected = true;
+
+  console.log("MongoDB connected");
+};
+
+/* -------------------- Vercel Handler -------------------- */
+export default async function handler(req: Request, res: Response) {
+  await connectDB();
+  return app(req, res);
+}
+
+/* -------------------- Local Server -------------------- */
+const PORT = process.env.PORT || 4000;
+
+if (process.env.VERCEL !== "1") {
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
     });
-  })
-  .catch((err) => {
-    console.error("DB Connection failed:", err);
   });
+}

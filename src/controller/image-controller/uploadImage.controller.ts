@@ -1,7 +1,7 @@
-import runApiPrechecks from "@common/functions/common.functions";
-import { globalConfig } from "@config/global.config";
-import { imagekit } from "@config/imagekit.config";
-import { devLogger } from "@utils/logger.util";
+import runApiPrechecks from "../../common/functions/common.functions";
+import { globalConfig } from "../../config/global.config";
+import { imagekit } from "../../config/imagekit.config";
+import { devLogger } from "../../utils/logger.util";
 import { Request, Response } from "express";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";

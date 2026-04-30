@@ -2,12 +2,22 @@
   "name": "collabimage",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "dev": "nodemon --watch src --exec tsx src/index.ts",
     "build": "tsc",
     "start": "tsx dist/index.js"
   },
   "author": "",
+  "_moduleAliases": {
+    "@config": "dist/config",
+    "@routes": "dist/routes",
+    "@utils": "dist/utils",
+    "@models": "dist/models",
+    "@common": "dist/common"
+  },
   "license": "ISC",
   "description": "",
   "dependencies": {
@@ -15,13 +25,14 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "imagekit": "^6.0.0",
+    "module-alias": "^2.3.4",
     "mongodb": "^7.0.0",
     "mongoose": "^9.1.2",
     "multer": "^2.1.1",
-    "socket.io": "^4.8.3",
     "uuid": "^14.0.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/multer": "^2.1.0",
     "@types/node": "^25.0.5",

@@ -1,6 +1,6 @@
 // src/config/env.ts
 import dotenv from "dotenv";
-import { Environment } from "@common/enums/environment.enum";
+import { Environment } from "../common/enums/environment.enum";
 
 const env = (process.env.NODE_ENV as Environment) || Environment.Development;
 
