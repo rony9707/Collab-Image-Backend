@@ -2,6 +2,7 @@
   "name": "collabimage",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "commonjs",
   "engines": {
     "node": "20.x"
   },
