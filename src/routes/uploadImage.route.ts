@@ -1,4 +1,4 @@
-import { uploadImage } from "@controller/image/uploadImage.controller";
+import { uploadImage } from "@controller/image-controller/uploadImage.controller";
 import { Router } from "express";
 const uploadRouter = Router();
 

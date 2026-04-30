@@ -22,6 +22,7 @@ export const uploadImage = [
       });
       if (!precheckResult) return;
 
+      //Run API Data Checks
       if (!checkAPIData(req, res)) {
         return;
       }
@@ -65,7 +66,7 @@ function checkAPIData(
   if (!username || !usergroup) {
     res.status(400).json({
       success: false,
-      message: "username and usergroup are required",
+      message: "Both username and usergroup are required",
     });
     return false;
   }
@@ -73,7 +74,7 @@ function checkAPIData(
   if (!req.file) {
     res.status(400).json({
       success: false,
-      message: "No file uploaded",
+      message: "No file to be present to be uploaded",
     });
     return false;
   }
@@ -87,10 +88,10 @@ async function uploadImageToImageKit(
   usergroup: string,
 ) {
   const folderPath = `CameraCollab/${username}/${usergroup}`;
-  const fileName = `${uuidv4()}.jpg`;
+  const fileName = `${uuidv4()}`;
   const response = await imagekit.upload({
     file: fileBuffer,
-    fileName: `${Date.now()}_${fileName}`,
+    fileName: `${username}_${usergroup}_${fileName}`,
     folder: folderPath,
   });
   return response;
