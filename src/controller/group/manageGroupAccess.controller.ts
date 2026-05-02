@@ -3,6 +3,7 @@ import { Group } from "../../models/group.model";
 import { Request, Response } from "express";
 import runApiPrechecks from "../../common/functions/common.functions";
 import { globalConfig } from "../../config/global.config";
+import { User } from "../../models/user.model";
 
 export const modifyGroup = async (req: Request, res: Response) => {
   try {
@@ -56,33 +57,60 @@ export const modifyGroup = async (req: Request, res: Response) => {
     let message = "";
 
     if (action === "add") {
-      if (group.access.includes(email)) {
-        devLogger("Modify Group: Email already exists");
+      // prevent duplicate invite
+      const alreadyInvited = await User.findOne({
+        email,
+        "invitedGroups.groupId": group._id,
+        "invitedGroups.status": "pending",
+      });
+
+      if (alreadyInvited) {
         return res.status(400).json({
           success: false,
-          message: "Email already has access",
+          message: "User already invited",
         });
       }
 
-      group.access.push(email);
-      message = "Email added to group";
-      devLogger(`Email added: ${email}`);
+      // prevent already accepted users
+      if (group.access.includes(email)) {
+        return res.status(400).json({
+          success: false,
+          message: "User already has access",
+        });
+      }
+
+      await User.findOneAndUpdate(
+        { email },
+        {
+          $addToSet: {
+            invitedGroups: {
+              groupId: group._id,
+              groupName: group.name,
+              status: "pending",
+            },
+          },
+        },
+      );
+
+      message = "Invite sent";
     }
 
     if (action === "remove") {
-      if (!group.access.includes(email)) {
-        devLogger("Modify Group: Email not found in group");
-        return res.status(400).json({
-          success: false,
-          message: "Email not found in group",
-        });
-      }
-
+      // remove from access
       group.access = group.access.filter((e: string) => e !== email);
-      message = "Email removed from group";
-      devLogger(`Email removed: ${email}`);
-    }
 
+      // remove notification
+      await User.findOneAndUpdate(
+        { email },
+        {
+          $pull: {
+            invitedGroups: { groupId: group._id },
+          },
+        },
+      );
+
+      message = "User removed completely";
+    }
     await group.save();
 
     return res.status(200).json({
@@ -109,6 +137,18 @@ async function checkAPIData(
   if (!groupId) {
     devLogger("Modify Group Failed: groupId is required");
     res.status(400).json({ success: false, message: "Group ID is required" });
+    return false;
+  }
+
+  // Check if email exists in User collection
+  const userExists = await User.findOne({ email });
+
+  if (!userExists) {
+    devLogger("Modify Group Failed: Email not found in User collection");
+    res.status(400).json({
+      success: false,
+      message: "User with this email does not exist",
+    });
     return false;
   }
 

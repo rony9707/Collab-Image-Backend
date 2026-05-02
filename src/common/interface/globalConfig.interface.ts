@@ -5,4 +5,5 @@ export interface GlobalConfig {
   enableGetGroupsAPI: boolean;
   enableDeleteGroupAPI: boolean;
   enableModifyGroupAPI: boolean;
+  enableUserSearchAPI: boolean;
 }
