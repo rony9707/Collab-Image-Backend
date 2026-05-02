@@ -7,7 +7,7 @@ import { globalConfig } from "../../config/global.config";
 
 export const createGroup = async (req: Request, res: Response) => {
   try {
-    //Run API Prechecks
+    // Run API Prechecks
     const precheckResult = runApiPrechecks({
       request: req,
       response: res,
@@ -18,16 +18,19 @@ export const createGroup = async (req: Request, res: Response) => {
     const { userId, user } = (req as any).user;
 
     const email = user.emailAddresses[0]?.emailAddress;
-    const name = req.params.name as string;
 
-    //Run API Data Checks
-    if (!(await checkAPIData(res, name, userId, email))) {
+    //Get from BODY instead of params
+    const { name, description } = req.body;
+
+    // Run API Data Checks
+    if (!(await checkAPIData(res, name, description, userId, email))) {
       return;
     }
 
-    // Create group
+    //Create group with description
     const group = await Group.create({
       name,
+      description: description || "", // optional
       createdBy: {
         userId,
         email,
@@ -52,25 +55,23 @@ export const createGroup = async (req: Request, res: Response) => {
   }
 };
 
-
-
-
 async function checkAPIData(
   res: Response,
   name: string,
+  description: string,
   userId: string,
   email: string,
 ): Promise<boolean> {
-  if (!name) {
+  if (!name || !description) {
     res.status(400).json({
       success: false,
-      message: "Group name is required",
+      message: "Group name and description are required",
     });
-    devLogger("Group Creation Failed: Group name is required");
+    devLogger("Group Creation Failed: Group name and description are required");
     return false;
   }
 
-  //No spaces allowed anywhere
+  // No spaces allowed
   if (/\s/.test(name)) {
     devLogger("Group Creation Failed: Group name should not contain spaces");
     res.status(400).json({
@@ -89,7 +90,7 @@ async function checkAPIData(
     return false;
   }
 
-  // Max 10 groups per user
+  // Max groups per user
   const groupCount = await Group.countDocuments({
     "createdBy.userId": userId,
   });
@@ -100,7 +101,7 @@ async function checkAPIData(
       message: `You can create a maximum of ${groupConfig.maxGroupSizePerUser} groups only`,
     });
     devLogger(
-      `Group Creation Failed: User has already created maximum number of groups (${groupConfig.maxGroupSizePerUser})`,
+      `Group Creation Failed: Max groups reached (${groupConfig.maxGroupSizePerUser})`,
     );
     return false;
   }

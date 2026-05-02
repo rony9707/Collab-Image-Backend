@@ -8,7 +8,7 @@ import { getUserNotifications } from "../controller/group/userGroupNotification.
 import { respondToInvite } from "../controller/group/userNotificationResponse.controller";
 const groupRouter = Router();
 
-groupRouter.post("/creategroup/:name",requireAuth, createGroup); //Create Group Route
+groupRouter.post("/creategroup",requireAuth, createGroup); //Create Group Route
 groupRouter.delete("/deletegroup/:groupId",requireAuth, deleteGroup); //Delete Group Route
 groupRouter.get("/getgroups/:email",requireAuth, getGroups);  //Get Groups for a user
 groupRouter.put("/manageGroupAccess/:groupId/:email/:action",requireAuth, modifyGroup);  //Modify Group Route (add/remove user)
