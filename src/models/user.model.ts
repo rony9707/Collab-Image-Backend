@@ -1,5 +1,29 @@
 import mongoose from "mongoose";
 
+const invitedGroupSchema = new mongoose.Schema({
+  groupId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Group",
+    required: true,
+  },
+  groupName: {
+    type: String,
+  },
+  invitedAt: {
+    type: Date,
+    default: Date.now,
+  },
+  isSeen: {
+    type: Boolean,
+    default: false,
+  },
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+  },
+});
+
 const userSchema = new mongoose.Schema({
   clerkId: {
     type: String,
@@ -9,6 +33,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    index: true,
   },
   name: {
     type: String,
@@ -20,6 +45,7 @@ const userSchema = new mongoose.Schema({
   lastLogin: {
     type: Date,
   },
+  invitedGroups: [invitedGroupSchema],
 });
 
 export const User = mongoose.model("User", userSchema);

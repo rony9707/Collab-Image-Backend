@@ -7,4 +7,5 @@ export const globalConfig:GlobalConfig = {
   enableGetGroupsAPI: true,    //GET /getGroups
   enableDeleteGroupAPI: true,  //DELETE /deleteGroup  
   enableModifyGroupAPI: true,  //PUT /modifyGroup
+  enableUserSearchAPI: true,   //GET /usersearch
 };
