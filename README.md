@@ -19,7 +19,7 @@ Server runs on `http://localhost:4000`
 Create a `.env.development` file:
 
 | Variable                   | Description                 |
-| -------------------------- | --------------------------- |
+| -------------------------- | --------------------------- | ---------- |
 | `DBConnectionString`       | MongoDB connection string   |
 | `frontEndConnectionString` | Allowed CORS origin         |
 | `PORT`                     | Server port (default: 4000) |
@@ -29,8 +29,7 @@ Create a `.env.development` file:
 | `IMAGEKIT_PUBLIC_KEY`      | ImageKit public key         |
 | `IMAGEKIT_PRIVATE_KEY`     | ImageKit private key        |
 | `IMAGEKIT_PRIVATE_KEY`     | ImageKit private key        |
-| `ENV`                      | development | production    |
-
+| `ENV`                      | development                 | production |
 
 ### Environment Modes
 
@@ -50,9 +49,10 @@ Create a `.env.development` file:
 
 ### Authentication
 
-| Method | Endpoint      | Description                             |
-| ------ | ------------- | --------------------------------------- |
-| `GET`  | `/auth/login` | Authenticate user (requires Clerk auth) |
+| Method | Endpoint           | Description                             |
+| ------ | ------------------ | --------------------------------------- |
+| `GET`  | `/auth/login`      | Authenticate user (requires Clerk auth) |
+| `GET`  | `/auth/usersearch` | Search for a user by email              |
 
 ### Image Upload
 
@@ -62,12 +62,14 @@ Create a `.env.development` file:
 
 ### Group Management
 
-| Method   | Endpoint                                     | Description                |
-| -------- | -------------------------------------------- | -------------------------- |
-| `POST`   | `/group/creategroup/:name`                   | Create a new group         |
-| `DELETE` | `/group/deletegroup/:groupId`                | Delete a group             |
-| `GET`    | `/group/getgroups/:email`                    | Get groups created by user + groups shared with user |
-| `PUT`    | `/group/modifygroup/:groupId/:email/:action` | Add/remove user from group |
+| Method   | Endpoint                                           | Description                                          |
+| -------- | -------------------------------------------------- | ---------------------------------------------------- |
+| `POST`   | `/group/creategroup/:name`                         | Create a new group                                   |
+| `DELETE` | `/group/deletegroup/:groupId`                      | Delete a group                                       |
+| `GET`    | `/group/getgroups/:email`                          | Get groups created by user + groups shared with user |
+| `PUT`    | `/group/manageGroupAccess/:groupId/:email/:action` | Add/remove user from group                           |
+| `GET`    | `/group/userNotifications`                         | Get user notifications for group invites             |
+| `GET`    | `/group/respondToInvite/:groupId/:action`          | Respond to group invite                              |
 
 ## 📁 Project Structure
 

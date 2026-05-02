@@ -13,6 +13,6 @@ groupRouter.delete("/deletegroup/:groupId",requireAuth, deleteGroup); //Delete G
 groupRouter.get("/getgroups/:email",requireAuth, getGroups);  //Get Groups for a user
 groupRouter.put("/manageGroupAccess/:groupId/:email/:action",requireAuth, modifyGroup);  //Modify Group Route (add/remove user)
 groupRouter.get("/userNotifications",requireAuth, getUserNotifications); //Get user notifications for group invites 
-groupRouter.get("/respondToInvite/:groupId/:action",requireAuth, respondToInvite); //Respond to group invite
+groupRouter.post("/respondToInvite/:groupId/:action",requireAuth, respondToInvite); //Respond to group invite
 
 export default groupRouter;
