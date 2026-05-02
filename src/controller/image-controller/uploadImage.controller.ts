@@ -87,7 +87,7 @@ async function uploadImageToImageKit(
   usergroup: string,
 ) {
   const folderPath = `CameraCollab/${username}/${usergroup}`;
-  const fileName = `${Date.now()}_${username}.jpg`;
+  const fileName = `${Date.now()}`;
   const response = await imagekit.upload({
     file: fileBuffer,
     fileName: `${username}_${usergroup}_${fileName}`,

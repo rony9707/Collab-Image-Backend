@@ -3,14 +3,17 @@ import "./config/env.config";
 import express, { Request, Response } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+import { clerkMiddleware, getAuth, clerkClient } from "@clerk/express";
 
 import uploadRouter from "./routes/uploadImage.route";
 import { apiPerformanceLogger } from "./common/functions/checkAPIPerformance.function";
+import authRouter from "@routes/auth.route";
 
 const app = express();
 
 /* -------------------- Middleware -------------------- */
 app.use(
+  clerkMiddleware(),
   cors({
     origin: process.env.frontEndConnectionString,
     credentials: true,
@@ -27,6 +30,22 @@ app.use(apiPerformanceLogger);
 
 /* -------------------- Routes -------------------- */
 app.use("/upload", uploadRouter);
+app.use("/auth", authRouter);
+
+// //demo route for auth
+// app.get("/protected", async (req, res) => {
+//   //console.log(getAuth(req));
+//   const { userId } = getAuth(req);
+//   console.log("Authenticated user ID:", userId);
+//   const user = await clerkClient.users.getUser(userId!);
+
+//   //console.log(user);
+//   //console.log("Authenticated user ID:", req);
+//   if (!userId) {
+//     return res.status(401).json({ error: "Unauthorized" });
+//   }
+//   res.json({ message: "You are authenticated!", userId });
+// });
 
 /* -------------------- DB Connection -------------------- */
 let isConnected = false;
