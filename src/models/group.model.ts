@@ -27,10 +27,4 @@ const groupSchema = new mongoose.Schema({
   },
 });
 
-
-groupSchema.index(
-  { "createdBy.userId": 1, name: 1 },
-  { unique: true }
-);
-
 export const Group = mongoose.model("Group", groupSchema);

@@ -1,80 +1,124 @@
-# Logger Micro-Service
+# CollabImage API
 
-A simple logger micro-service built with TypeScript for logging application events and errors.
+A Node.js/Express backend API for image collaboration with group management capabilities.
 
-## Table of Contents
-
-- [Features](#features)
-- [Installation](#installation)
-- [Scripts](#scripts)
-- [Environment Setup](#environment-setup)
-- [Getting Started](#getting-started)
-- [API Endpoints](#api-endpoints)
-- [Payload Structure](#payload-structure)
-
-## Features
-
-- Log creation and retrieval
-- Live log statistics
-- Environment-specific configuration
-- Built with TypeScript
-
-## Installation
+## 🚀 Quick Start
 
 ```bash
+# Install dependencies
 npm install
+
+# Run development server
+npm run dev
 ```
 
-## Scripts
+Server runs on `http://localhost:4000`
 
-| Command         | Description                                |
-| --------------- | ------------------------------------------ |
-| `npm run dev`   | Run in development mode with hot reloading |
-| `npm run build` | Compile TypeScript to JavaScript           |
-| `npm start`     | Run the compiled service (build first)     |
+## 📋 Environment Variables
 
-## Environment Setup
+Create a `.env.development` file:
 
-This service uses environment-specific `.env` files (e.g., `.env.development` and `.env.production`). Ensure these files exist in the root directory with your configuration variables.
+| Variable                   | Description                 |
+| -------------------------- | --------------------------- |
+| `DBConnectionString`       | MongoDB connection string   |
+| `frontEndConnectionString` | Allowed CORS origin         |
+| `PORT`                     | Server port (default: 4000) |
+| `CLERK_PUBLISHABLE_KEY`    | Clerk auth publishable key  |
+| `CLERK_SECRET_KEY`         | Clerk auth secret key       |
+| `IMAGEKIT_URL_ENDPOINT`    | ImageKit URL endpoint       |
+| `IMAGEKIT_PUBLIC_KEY`      | ImageKit public key         |
+| `IMAGEKIT_PRIVATE_KEY`     | ImageKit private key        |
+| `IMAGEKIT_PRIVATE_KEY`     | ImageKit private key        |
+| `ENV`                      | development | production    |
 
-### Required Environment Variables
 
-| Variable                   | Description                        | Example                                                                              |
-| -------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------ |
-| `PORT`                     | The port on which the service runs | `3000`                                                                               |
-| `DBConnectionString`       | MongoDB connection string          | `mongodb+srv://username:password@cluster.mongodb.net/db?retryWrites=true&w=majority` |
-| `frontEndConnectionString` | Frontend application URL           | `http://localhost:4200`                                                              |
-| `ENV`                      | Environment mode                   | `development`                                                                        |
+### Environment Modes
 
-## Getting Started
+- **Development** — loads `.env.development`
+- **Production** — loads `.env.production` (or Vercel env vars)
 
-1. Install dependencies: `npm install`
-2. For development: `set NODE_ENV=development && npm run dev` (loads `.env.development`)
-3. Build the project: `npm run build`
-4. For production: `set NODE_ENV=production && npm start` (loads `.env.production` after building)
+## 🛠️ Tech Stack
+
+- **Runtime:** Node.js 20.x
+- **Framework:** Express.js
+- **Database:** MongoDB + Mongoose
+- **Auth:** Clerk (@clerk/express)
+- **Image Storage:** ImageKit
+- **Deployment:** Vercel
 
 ## API Endpoints
 
-- `POST /logs/createLogs` - Create a new log entry
-- `GET /logs/liveLogStats` - Get live log statistics
-- `GET /logs/getLogs` - Retrieve logs
+### Authentication
 
-Base URL: `http://localhost:3000`
+| Method | Endpoint      | Description                             |
+| ------ | ------------- | --------------------------------------- |
+| `GET`  | `/auth/login` | Authenticate user (requires Clerk auth) |
 
-## Payload Structure
+### Image Upload
 
-For creating logs, use the following JSON payload:
+| Method | Endpoint              | Description                  |
+| ------ | --------------------- | ---------------------------- |
+| `POST` | `/upload/uploadImage` | Upload image (requires auth) |
 
-```json
-{
-  "level": "error",
-  "message": "agnibha",
-  "meta": {
-    "module": "test module",
-    "serviceName": "test service",
-    "route": "test route",
-    "username": "rony",
-    "sessionId": "1232"
-  }
-}
+### Group Management
+
+| Method   | Endpoint                                     | Description                |
+| -------- | -------------------------------------------- | -------------------------- |
+| `POST`   | `/group/creategroup/:name`                   | Create a new group         |
+| `DELETE` | `/group/deletegroup/:groupId`                | Delete a group             |
+| `GET`    | `/group/getgroups/:email`                    | Get groups created by user + groups shared with user |
+| `PUT`    | `/group/modifygroup/:groupId/:email/:action` | Add/remove user from group |
+
+## 📁 Project Structure
+
 ```
+src/
+├── config/
+│   ├── env.config.ts      # Environment configuration
+│   ├── global.config.ts   # Global feature flags
+│   └── imagekit.config.ts # ImageKit setup
+├── controller/
+│   ├── group/             # Group CRUD controllers
+│   ├── image/             # Image upload controller
+│   └── user/              # Auth controller
+├── middleware/
+│   └── authetication.middleware.ts  # Auth middleware
+├── models/
+│   ├── group.model.ts     # Group Mongoose model
+│   └── user.model.ts      # User Mongoose model
+├── routes/
+│   ├── auth.route.ts
+│   ├── group.route.ts
+│   └── uploadImage.route.ts
+├── common/
+│   ├── enums/             # TypeScript enums
+│   ├── functions/         # Shared functions
+│   └── interface/         # TypeScript interfaces
+└── index.ts               # Express app entry point
+```
+
+## 🔧 Available Scripts
+
+| Script          | Description                   |
+| --------------- | ----------------------------- |
+| `npm run dev`   | Start dev server with nodemon |
+| `npm run build` | Compile TypeScript            |
+| `npm run start` | Run compiled production build |
+
+## 🔐 Authentication
+
+All protected routes require a valid Clerk authentication token. Include the token in the `Authorization` header:
+
+```
+Authorization: Bearer <clerk-token>
+```
+
+## 📦 Dependencies
+
+- `@clerk/express` — Authentication
+- `cors` — Cross-origin resource sharing
+- `dotenv` — Environment variable loading
+- `express` — Web framework
+- `imagekit` — Image storage
+- `mongoose` — MongoDB ODM
+- `multer` — File upload handling

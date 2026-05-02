@@ -45,23 +45,15 @@ export const createGroup = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     devLogger("Create Group Error:", error);
-
-    // Handle duplicate index error (race condition safety)
-    if (error.code === 11000) {
-      devLogger("Group Creation Failed: Group with this name already exists");
-      return res.status(400).json({
-        success: false,
-        message: "Group with this name already exists",
-      });
-    }
-
-    devLogger("Create Group Error:", error);
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
     });
   }
 };
+
+
+
 
 async function checkAPIData(
   res: Response,
@@ -75,6 +67,16 @@ async function checkAPIData(
       message: "Group name is required",
     });
     devLogger("Group Creation Failed: Group name is required");
+    return false;
+  }
+
+  //No spaces allowed anywhere
+  if (/\s/.test(name)) {
+    devLogger("Group Creation Failed: Group name should not contain spaces");
+    res.status(400).json({
+      success: false,
+      message: "Group name should not contain spaces",
+    });
     return false;
   }
 
@@ -100,21 +102,6 @@ async function checkAPIData(
     devLogger(
       `Group Creation Failed: User has already created maximum number of groups (${groupConfig.maxGroupSizePerUser})`,
     );
-    return false;
-  }
-
-  // Prevent duplicate group names (case-insensitive)
-  const existingGroup = await Group.findOne({
-    "createdBy.userId": userId,
-    name: { $regex: `^${name}$`, $options: "i" },
-  });
-
-  if (existingGroup) {
-    res.status(400).json({
-      success: false,
-      message: "Group with this name already exists",
-    });
-    devLogger("Group Creation Failed: Group with this name already exists");
     return false;
   }
 
