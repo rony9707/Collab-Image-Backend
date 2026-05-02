@@ -3,11 +3,12 @@ import "./config/env.config";
 import express, { Request, Response } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import { clerkMiddleware, getAuth, clerkClient } from "@clerk/express";
+import { clerkMiddleware } from "@clerk/express";
 
 import uploadRouter from "./routes/uploadImage.route";
 import { apiPerformanceLogger } from "./common/functions/checkAPIPerformance.function";
-import authRouter from "@routes/auth.route";
+import authRouter from "./routes/auth.route";
+import groupRouter from "./routes/group.route";
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(apiPerformanceLogger);
 /* -------------------- Routes -------------------- */
 app.use("/upload", uploadRouter);
 app.use("/auth", authRouter);
+app.use("/group", groupRouter);
 
 // //demo route for auth
 // app.get("/protected", async (req, res) => {
